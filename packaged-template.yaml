@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: sample ruby application
+Resources:
+  HelloRubyRecordFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: hello_ruby_record.put_item
+      Runtime: ruby2.5
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: RubyExampleDDBTable
+      Environment:
+        Variables:
+          DDB_TABLE:
+            Ref: RubyExampleDDBTable
+      CodeUri: s3://first-ruby-lambda-bucket/abaa0eb7b7074294ee7cb67f6d817050
+  RubyExampleDDBTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: id
+        Type: String
+Outputs:
+  HelloRubyRecordFunction:
+    Description: Hello Ruby Record Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - HelloRubyRecordFunction
+      - Arn
